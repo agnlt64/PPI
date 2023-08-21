@@ -4,33 +4,43 @@ import os
 import glob
 import time
 import json
+import random
+
 from PyLog.logger import Logger
+from levenshtein import lev
 
 FunctionType = dict[str, tuple[str, str | typing.Any]]
+
+STDLIB_IGNORE = ['test', 'site-packages', 'lib2to3']
 JSON_OUTPUT = 'functions.json'
-logger = Logger(log_to_file=True)
+
+logger = Logger()
 
 def read_source_file(filename: os.PathLike) -> str:
     with open(filename, 'r') as source:
         return source.read()
 
 
-def save_json(content: dict, filename: str = JSON_OUTPUT) -> None:
+def save_json(content: list, filename: str = JSON_OUTPUT) -> None:
     data = json.dumps(content, indent=4)
     with open(filename, 'w') as out:
         print(data, file=out)
-        
+
+
 def read_json_file(filename: str = JSON_OUTPUT):
     with open(filename) as f:
         return json.load(f)
         
 
-def print_func(function: dict, return_value: bool = False) -> str | None:
+def get_signature(function: dict, file_infos: bool = False) -> str:
     args = ''
     for a in function['args']:
         args += str(a) + ', '
-    signature = f"{function['filename']}:{function['line']} {function['name']}({args[:-2]})"
-    return signature if return_value else print(signature)
+    signature = f"{function['name']}({args[:-2]})"
+    if file_infos:
+        signature = f"{function['filename']}:{function['line']} " + signature
+    return signature
+
 
 
 def get_function_from_node(node: ast.AST, file_path: os.PathLike, abspath: bool = False) -> FunctionType:
@@ -41,18 +51,27 @@ def get_function_from_node(node: ast.AST, file_path: os.PathLike, abspath: bool 
         'args': [arg.arg for arg in args],
         'filename': file_path if not abspath else os.path.abspath(file_path),
         'line': node.lineno,
-        'col': node.col_offset
     }
     return new_function
 
 
-def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = ['test', 'site-packages', 'lib2to3']) -> list[FunctionType]:
+def normalize(query: str) -> str:
+    split_query = query.split('(')
+    name = split_query[0] # everything brefore the opening parenthesis
+    name = '_'.join([a for a in name.split(' ') if a != ''])
+    args = split_query[1].replace(')', '')
+    args = ', '.join([a.lstrip().rstrip() for a in args.split(',')])
+    return f'{name} ( {args} )'
+
+
+def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = []) -> list[FunctionType]:
     # before indexing, check if there is the JSON file functions.json
     logger.warning(f'Not indexing {base_folder}, reading the content of {JSON_OUTPUT}. If you want to avoid this behaviour, either delete or rename {JSON_OUTPUT}.')
     if os.path.exists(JSON_OUTPUT):
         return read_json_file(JSON_OUTPUT)
     
     functions = []
+    folders_to_ignore += STDLIB_IGNORE
     start = time.time()
     for filename in glob.iglob(f'{base_folder}/**', recursive=True):
         current_dir = filename.split('/')
@@ -76,7 +95,15 @@ def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = ['test
     logger.info(f'Indexed folder {base_folder} in {end - start} seconds.')
     return functions
 
+def sort(query: str, functions: list[FunctionType]) -> list:
+    sorted_functions = []
+    for f in functions:
+        sorted_functions.append((lev(query, normalize(get_signature(f))), f))
+    return sorted(sorted_functions, key=lambda x: x[0])
 
-functions = index_folder('./stdlib')
+query = normalize('mainloop()')
+
+functions = sort(query, index_folder('./stdlib'))
+
 for i in range(10):
-    print_func(functions[i])
+    print(get_signature(functions[i][1], True))
