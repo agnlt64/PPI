@@ -2,3 +2,4 @@ stdlib/
 *.json
 __pycache__/
 logs.txt
+.env/
