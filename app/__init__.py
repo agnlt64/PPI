@@ -1,5 +1,8 @@
 from flask import Flask
+from PyLog.logger import Logger
 import secrets
+
+client_logger = Logger()
 
 def create_app() -> Flask:
     app = Flask(__name__)

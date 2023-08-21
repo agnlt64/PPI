@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PPI, the Python Project Indexer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Hello world!</h1>
+    <!-- action is set in the JS -->
+    <form method="POST" id="search-form">
+        <input type="text" id="folder-to-index" placeholder="Absolute path to a folder...">
+        <input type="text" id="signature" placeholder="Function signature...">
+        <button type="submit" id="send">Confirm</button>
+    </form>
 </body>
 <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </html>
