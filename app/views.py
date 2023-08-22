@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, redirect, request
+from flask import Blueprint, render_template, request
+import json
 
-from . import client_logger
 from .ppi import index_folder, sort, normalize, get_signature
 
 views = Blueprint('views', __name__)
@@ -9,11 +9,12 @@ views = Blueprint('views', __name__)
 def index():
     return render_template('index.html')
 
-@views.route('/api/search', methods=['POST'])
+@views.route('/search')
 def search_folder():
     args = request.args.to_dict()
     folder = args.get('folder')
     signature = normalize(args.get('signature'))
-    functions = sort(signature, index_folder(folder, output='app/ppi/functions.json'))
-    client_logger.info(functions[0][1])
-    return redirect(request.referrer)
+    unsorted_functions = index_folder(folder, output='app/ppi/functions.json', web_context=True)
+    sorted_functions = sort(signature, unsorted_functions)
+    functions = [get_signature(sorted_functions[i][1], file_infos=True) for i in range(len(sorted_functions))]
+    return json.dumps(functions[:20])

@@ -90,14 +90,15 @@ def normalize(query: str) -> str:
     return f'{name} ( {args} )'
 
 
-def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], output: str = JSON_OUTPUT) -> list[FunctionType]:
+def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], output: str = JSON_OUTPUT, web_context: bool = False) -> list[FunctionType]:
     """
     Index the `base_folder` while ignoring the `folder_to_ignore` list. See `STDLIB_IGNORE` for the defaults folders that will be ignored.
     When the indexing is done, the functions that have been parsed are saved to the `JSON_OUTPUT` file by default.
     If the file already exists when the function is called, the `base_folder` is not indexed and the content of the file is returned.
     """
     # before indexing, check if there is the JSON file functions.json
-    logger.warning(f'Not indexing {base_folder}, reading the content of {output}. If you want to avoid this behaviour, either delete or rename {JSON_OUTPUT}.')
+    if not web_context:
+        logger.warning(f'Not indexing {base_folder}, reading the content of {output}. If you want to avoid this behaviour, either delete or rename {JSON_OUTPUT}.')
     if os.path.exists(output):
         return read_json_file(output)
 
@@ -109,9 +110,11 @@ def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], ou
         # https://stackoverflow.com/questions/3170055/test-if-lists-share-any-items-in-python (for 👇)
         want_to_continue = filename.endswith('py') and not bool(set(current_dir) & set(folders_to_ignore))
         if os.path.isfile(filename) and want_to_continue:
-            logger.info(f'Reading {filename}...')
+            if not web_context:
+                logger.info(f'Reading {filename}...')
             source_code = read_source_file(filename)
-            logger.info(f'Parsing {filename}...')
+            if not web_context:
+                logger.info(f'Parsing {filename}...')
             parsed = ast.parse(source_code)
             # go through the AST
             for node in ast.walk(parsed):

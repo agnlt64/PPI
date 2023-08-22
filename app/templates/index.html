@@ -8,11 +8,22 @@
 </head>
 <body>
     <!-- action is set in the JS -->
-    <form method="POST" id="search-form">
+    <form id="index-form">
         <input type="text" id="folder-to-index" placeholder="Absolute path to a folder...">
         <input type="text" id="signature" placeholder="Function signature...">
         <button type="submit" id="send">Confirm</button>
     </form>
+    <div class="spin" id="spin">Indexing...</div>
+    <div id="results" class="results"></div>
+    <template data-function-card>
+        <div class="function-card">
+            <span data-file-path class="function-file-path"></span>
+            <span data-function-name class="function-name"></span>
+            <span class="open-paren">(</span>
+                <span data-function-args class="function-args"></span>
+            <span class="close-paren">)</span>
+        </div>
+    </template>
 </body>
 <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </html>

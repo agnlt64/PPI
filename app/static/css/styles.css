@@ -3,3 +3,65 @@
     padding: 0;
     margin: 0;
 }
+
+body {
+    background-color: #212529;
+    color: #fff;
+}
+
+/* from here: https://www.w3docs.com/snippets/css/how-to-create-loading-spinner-with-css.html */
+@keyframes spinner {
+    0% {
+        transform: translate3d(-50%, -50%, 0) rotate(0deg);
+    }
+
+    100% {
+        transform: translate3d(-50%, -50%, 0) rotate(360deg);
+    }
+}
+
+.spin {
+    display: none;
+}
+
+.spin::before {
+    animation: 1.5s linear infinite spinner;
+    animation-play-state: inherit;
+    border: solid 5px #cfd0d1;
+    border-bottom-color: #1c87c9;
+    border-radius: 50%;
+    content: "";
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    transform: translate3d(-50%, -50%, 0);
+    will-change: transform;
+}
+
+/* style for function card */
+.results {
+    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.results .function-card {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid #a6a6a6;
+}
+
+.results .function-card .function-file-path {
+    color: #1c87c9;
+}
+
+.results .function-card .function-name, .open-paren, .close-paren {
+    color: #eee494;
+}
+
+.results .function-card .function-args {
+    color: #fff;
+}
