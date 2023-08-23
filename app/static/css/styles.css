@@ -1,43 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@500&display=swap');
+
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    font-family: 'Exo 2', sans-serif;
 }
 
 body {
     background-color: #212529;
     color: #fff;
+    font-size: 22px;
 }
 
-/* from here: https://www.w3docs.com/snippets/css/how-to-create-loading-spinner-with-css.html */
-@keyframes spinner {
-    0% {
-        transform: translate3d(-50%, -50%, 0) rotate(0deg);
-    }
-
-    100% {
-        transform: translate3d(-50%, -50%, 0) rotate(360deg);
-    }
-}
-
-.spin {
+.spinner-container {
+    width: 100%;
     display: none;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3rem;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.spin::before {
-    animation: 1.5s linear infinite spinner;
-    animation-play-state: inherit;
-    border: solid 5px #cfd0d1;
-    border-bottom-color: #1c87c9;
+/* slider */
+.range-input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+    border-radius: 15px;
+    height: 6px;
+    background: #ccc;
+}
+
+.range-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 15px;
+    width: 15px;
+    background-color: #1c87c9;
     border-radius: 50%;
-    content: "";
-    height: 40px;
-    width: 40px;
-    position: absolute;
-    top: 10%;
-    left: 10%;
-    transform: translate3d(-50%, -50%, 0);
-    will-change: transform;
+    border: none;
+    transition: .2s ease-in-out;
+}
+
+.range-input::-moz-range-thumb {
+    height: 15px;
+    width: 15px;
+    background-color: #1c87c9;
+    border-radius: 50%;
+    border: none;
+    transition: .2s ease-in-out;
+}
+
+.value {
+    font-size: 26px;
+    width: 50px;
+    text-align: center;
+}
+
+.range {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+
+/* spinner from here: https://codepen.io/jkantner/pen/rNKVMKd */
+.pl {
+    width: 9.375em;
+    height: 9.375em;
+}
+
+.pl__arrows,
+.pl__ring-rotate,
+.pl__ring-stroke,
+.pl__tick {
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.pl__arrows {
+    animation-name: arrows;
+    transform: rotate(45deg);
+    transform-origin: 16px 52px;
+}
+
+.pl__ring-rotate,
+.pl__ring-stroke {
+    transform-origin: 80px 80px;
+}
+
+.pl__ring-rotate {
+    animation-name: ringRotate;
+}
+
+.pl__ring-stroke {
+    animation-name: ringStroke;
+    transform: rotate(-45deg);
+}
+
+.pl__tick {
+    animation-name: tick;
+}
+
+.pl__tick:nth-child(2) {
+    animation-delay: -1.75s;
+}
+
+.pl__tick:nth-child(3) {
+    animation-delay: -1.5s;
+}
+
+.pl__tick:nth-child(4) {
+    animation-delay: -1.25s;
+}
+
+.pl__tick:nth-child(5) {
+    animation-delay: -1s;
+}
+
+.pl__tick:nth-child(6) {
+    animation-delay: -0.75s;
+}
+
+.pl__tick:nth-child(7) {
+    animation-delay: -0.5s;
+}
+
+.pl__tick:nth-child(8) {
+    animation-delay: -0.25s;
+}
+
+/* Animations */
+@keyframes arrows {
+    from {
+        transform: rotate(45deg);
+    }
+
+    to {
+        transform: rotate(405deg);
+    }
+}
+
+@keyframes ringRotate {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(720deg);
+    }
+}
+
+@keyframes ringStroke {
+
+    from,
+    to {
+        stroke-dashoffset: 452;
+        transform: rotate(-45deg);
+    }
+
+    50% {
+        stroke-dashoffset: 169.5;
+        transform: rotate(-180deg);
+    }
+}
+
+@keyframes tick {
+
+    from,
+    3%,
+    47%,
+    to {
+        stroke-dashoffset: -12;
+    }
+
+    14%,
+    36% {
+        stroke-dashoffset: 0;
+    }
+}
+
+.index-form {
+    display: flex;
+    width: 100%;
+    height: 4rem;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 1rem;
+}
+
+.index-form .field {
+    display: flex;
+    flex-direction: column;
+}
+
+.index-form .field label {
+    color: #ccc;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.index-form input:not(#range) {
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 16px;
+    border: 1px solid #a6a6a6;
+}
+
+.index-form input:focus:not(#range),
+.index-form button:focus {
+    outline: 3px solid #599fef;
+}
+
+.index-form button {
+    padding: 12px 18px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #1c87c9;
+    color: #fff;
+    background-color: #1c87c9;
+    transition: 0.2s background-color, 0.2s border-color;
+}
+
+.index-form button:hover {
+    cursor: pointer;
+    background-color: #16679a;
+    border-color: #16679a;
 }
 
 /* style for function card */
@@ -58,7 +252,11 @@ body {
     color: #1c87c9;
 }
 
-.results .function-card .function-name, .open-paren, .close-paren {
+.results .function-card .function-name {
+    margin-left: 0.5rem;
+}
+
+.results .function-card:not(.function-args) {
     color: #eee494;
 }
 

@@ -99,8 +99,8 @@ def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], ou
     # before indexing, check if there is the JSON file functions.json
     if not web_context:
         logger.warning(f'Not indexing {base_folder}, reading the content of {output}. If you want to avoid this behaviour, either delete or rename {JSON_OUTPUT}.')
-    if os.path.exists(output):
-        return read_json_file(output)
+        if os.path.exists(output):
+            return read_json_file(output)
 
     functions = []
     folders_to_ignore += STDLIB_IGNORE
@@ -127,6 +127,7 @@ def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], ou
     save_json(content=functions, filename=output)
     end = time.time()
     logger.info(f'Indexed folder {base_folder} in {end - start} seconds.')
+    print(logger.RESET)
     return functions
 
 

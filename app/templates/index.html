@@ -5,25 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PPI, the Python Project Indexer</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='media/buk.png') }}" type="image/x-icon">
 </head>
 <body>
-    <!-- action is set in the JS -->
-    <form id="index-form">
-        <input type="text" id="folder-to-index" placeholder="Absolute path to a folder...">
-        <input type="text" id="signature" placeholder="Function signature...">
+    <form id="index-form" class="index-form">
+        <div class="field">
+            <label for="folder">Folder to index</label>
+            <input type="text" name="folder" id="folder-to-index" placeholder="Absolute path to a folder...">
+        </div>
+        <div class="field">
+            <label for="ignore">Folder(s) to ignore</label>
+            <input type="text" name="ignore" id="ignore" placeholder="Folders to ignore...">
+        </div>
+        <div class="field">
+            <label for="signature">Function signature</label>
+            <input type="text" name="signature" id="signature" placeholder="Function signature...">
+        </div>
+        <div class="field">
+            <label for="range">Number of functions to return</label>
+            <div class="range">
+                <input type="range" name="range" min="0" max="100" value="20" id="range" class="range-input" /> 
+                <div class="value">0</div>
+            </div>    
+        </div>
+        <!-- https://codepen.io/ibaslogic/pen/zYMJZaQ -->
+      </div>
         <button type="submit" id="send">Confirm</button>
     </form>
-    <div class="spin" id="spin">Indexing...</div>
+    <div class="spinner-container" id="spin">
+        <svg class="pl" viewBox="0 0 160 160" width="160px" height="160px" xmlns="http://www.w3.org/2000/svg">
+			<defs>
+				<linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+					<stop offset="0%" stop-color="#000" />
+					<stop offset="100%" stop-color="#fff" />
+				</linearGradient>
+				<mask id="mask1">
+					<rect x="0" y="0" width="160" height="160" fill="url(#grad)" />
+				</mask>
+				<mask id="mask2">
+					<rect x="28" y="28" width="104" height="104" fill="url(#grad)" />
+				</mask>
+			</defs>
+			<!-- Ring -->
+			<g>
+				<g class="pl__ring-rotate">
+					<circle class="pl__ring-stroke" cx="80" cy="80" r="72" fill="none" stroke="hsl(223,90%,55%)" stroke-width="16" stroke-dasharray="452.39 452.39" stroke-dashoffset="452" stroke-linecap="round" transform="rotate(-45,80,80)" />
+				</g>
+			</g>
+			<g mask="url(#mask1)">
+				<g class="pl__ring-rotate">
+					<circle class="pl__ring-stroke" cx="80" cy="80" r="72" fill="none" stroke="hsl(193,90%,55%)" stroke-width="16" stroke-dasharray="452.39 452.39" stroke-dashoffset="452" stroke-linecap="round" transform="rotate(-45,80,80)" />
+				</g>
+			</g>
+			<!-- Ticks -->
+			<g>
+				<g stroke-width="4" stroke-dasharray="12 12" stroke-dashoffset="12" stroke-linecap="round" transform="translate(80,80)">
+					<polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(-135,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(-90,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(-45,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(0,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(45,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(90,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(135,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,10%,90%)" points="0,2 0,14" transform="rotate(180,0,0) translate(0,40)" />
+				</g>
+			</g>
+			<g mask="url(#mask1)">
+				<g stroke-width="4" stroke-dasharray="12 12" stroke-dashoffset="12" stroke-linecap="round" transform="translate(80,80)">
+					<polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(-135,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(-90,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(-45,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(0,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(45,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(90,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(135,0,0) translate(0,40)" />
+					<polyline class="pl__tick" stroke="hsl(223,90%,80%)" points="0,2 0,14" transform="rotate(180,0,0) translate(0,40)" />
+				</g>
+			</g>
+			<!-- Arrows -->
+			<g>
+				<g transform="translate(64,28)">
+					<g class="pl__arrows" transform="rotate(45,16,52)">
+						<path fill="hsl(3,90%,55%)" d="M17.998,1.506l13.892,43.594c.455,1.426-.56,2.899-1.998,2.899H2.108c-1.437,0-2.452-1.473-1.998-2.899L14.002,1.506c.64-2.008,3.356-2.008,3.996,0Z"/>
+						<path fill="hsl(223,10%,90%)" d="M14.009,102.499L.109,58.889c-.453-1.421,.559-2.889,1.991-2.889H29.899c1.433,0,2.444,1.468,1.991,2.889l-13.899,43.61c-.638,2.001-3.345,2.001-3.983,0Z"/>
+					</g>
+				</g>
+			</g>
+			<g mask="url(#mask2)">
+				<g transform="translate(64,28)">
+					<g class="pl__arrows" transform="rotate(45,16,52)">
+						<path fill="hsl(333,90%,55%)" d="M17.998,1.506l13.892,43.594c.455,1.426-.56,2.899-1.998,2.899H2.108c-1.437,0-2.452-1.473-1.998-2.899L14.002,1.506c.64-2.008,3.356-2.008,3.996,0Z"/>
+						<path fill="hsl(223,90%,80%)" d="M14.009,102.499L.109,58.889c-.453-1.421,.559-2.889,1.991-2.889H29.899c1.433,0,2.444,1.468,1.991,2.889l-13.899,43.61c-.638,2.001-3.345,2.001-3.983,0Z"/>
+					</g>
+				</g>
+			</g>
+		</svg>
+        <p>Indexing...</p>
+    </div>
     <div id="results" class="results"></div>
     <template data-function-card>
         <div class="function-card">
             <span data-file-path class="function-file-path"></span>
-            <span data-function-name class="function-name"></span>
-            <span class="open-paren">(</span>
-                <span data-function-args class="function-args"></span>
-            <span class="close-paren">)</span>
+            <span data-function-name class="function-name"></span>(<span data-function-args class="function-args"></span>)
         </div>
     </template>
 </body>
 <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+<script src="{{ url_for('static', filename='js/slider.js') }}"></script>
 </html>

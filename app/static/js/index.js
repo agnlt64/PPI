@@ -1,5 +1,7 @@
 const folderToIndex = document.getElementById('folder-to-index')
 const signature = document.getElementById('signature')
+const ignore = document.getElementById('ignore')
+const max = document.getElementById('range')
 const indexForm = document.getElementById('index-form')
 const resultsDiv = document.getElementById('results')
 const spinner = document.getElementById('spin')
@@ -20,11 +22,14 @@ function buildCard(functionFile, functionName, functionArgs) {
     return functionCard
 }
 
+signature.addEventListener('input', () => {
+    document.title = signature.value !== '' ? `PPI - ${signature.value}` : 'PPI, the Python Project Indexer'
+})
+
 indexForm.addEventListener('submit', e => {
     e.preventDefault()
-    spinner.style.display = 'block'
-    const apiUrl = `/search?folder=${folderToIndex.value}&signature=${signature.value}`
-    document.title = `PPI - ${signature.value}`
+    spinner.style.display = 'flex'
+    const apiUrl = `/search?folder=${folderToIndex.value}&signature=${signature.value}&ignore=${ignore.value}&max=${max.value}`
     while (resultsDiv.firstChild) {
         resultsDiv.removeChild(resultsDiv.lastChild)
     }
@@ -40,8 +45,8 @@ indexForm.addEventListener('submit', e => {
             }
             spinner.style.display = 'none'
         })
-        // .catch(() => {
-        //     resultsDiv.innerHTML = `No match found for function ${signature.value}!`
-        //     spinner.style.display = 'none'
-        // })
+        .catch(() => {
+            resultsDiv.innerHTML = `No match found for function '${signature.value}'!`
+            spinner.style.display = 'none'
+        })
 })
