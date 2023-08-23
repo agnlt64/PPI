@@ -1,6 +1,6 @@
 # Python Project Indexer
 
-This Python script will index a project and return all the functions that match a specified signature/function name. It has no user interface at the moment, but this is planned. It uses the Levenshtein distance (see `levenshtein.py` for the implementation)
+This Python web application will index a specified folder (ignoring what you ask it to ignore) and will return a list of functions contained in the folder (aka Python project) matching the given signature, using the Levenshtein distance.
 
 ## Quick start
 ```console
