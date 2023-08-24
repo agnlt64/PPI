@@ -15,7 +15,6 @@ def search_folder():
     folder = args.get('folder')
     folders_to_ignore = args.get('ignore')
     numbers_of_functions = int(args.get('max'))
-    print(numbers_of_functions)
     signature = normalize(args.get('signature'))
     unsorted_functions = index_folder(folder, output='app/ppi/functions.json', web_context=True, folders_to_ignore=[folders_to_ignore])
     sorted_functions = sort(signature, unsorted_functions)
