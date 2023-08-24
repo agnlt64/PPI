@@ -14,4 +14,4 @@ python main.py # start the webserver on 127.0.0.1:8080
 ```
 
 ## Levenshtein distance tests
-In the `levenshtein.py` file, there are some tests to confirm that the algorithm is implemented properly. See `big_ass_words.txt` for more details about the tested words.
+In the `levenshtein/__init__.py` file, there are some tests to confirm that the algorithm is implemented properly. See `levenshtein/big_ass_words.txt` for more details about the tested words.
