@@ -24,6 +24,9 @@ function buildCard(functionFile, functionName, functionArgs) {
 
 signature.addEventListener('input', () => {
     document.title = signature.value !== '' ? `PPI - ${signature.value}` : 'PPI, the Python Project Indexer'
+    if (signature.value.charAt(signature.value.length - 1) === '(') {
+        signature.value += ')'
+    }
 })
 
 indexForm.addEventListener('submit', e => {
@@ -37,7 +40,8 @@ indexForm.addEventListener('submit', e => {
         .then(res => res.json())
         .then(data => { 
             for (func of data) {
-                const splitFunc = func.split(' ')
+                // 2 spaces for easier parsing
+                const splitFunc = func.split('  ')
                 const s = splitFunc[1].split('(')
                 const args = s[1].split(')')[0]
                 const card = buildCard(splitFunc[0], s[0], args)

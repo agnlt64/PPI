@@ -256,9 +256,9 @@ body {
 }
 
 .results .function-card:not(.function-args) {
-    color: #eee494;
+    color: #ffef76;
 }
 
 .results .function-card .function-args {
-    color: #fff;
+    color: #49ffd4;
 }
