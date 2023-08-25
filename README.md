@@ -14,11 +14,17 @@ python main.py # start the webserver on 127.0.0.1:8080
 ```
 
 ## How to use it
-Here is the sunyax to make a query:
+Here is the syntax to make a query:
 ```
+# if you know the name of the params
 function_name(param1, param2, param3)
+function name (param1, param2, param3)
+# if you don't know the name of the params, but you know how many params the function accepts
+function_name(_, _, _)
+# if you know nothing but the name
+function_name(*)
 ```
-Note that the function name does not need to be underscore-separated, it will be correctly formatted by the application. If you don't know the names of the parameters, you can use the `_` operator: `function(_, _)`. The application will return all the functions that match the given name and the number of parameters. If you don't know the number of parameters, you can use the `*` operator: `function(*)`. The application will return all the functions with a matching name.
+Note that the name does not have to be super accurate, the application will return the matching names according to the Levenshtein distance. The spacing is not important because all the inputs are formatted in the same way.
 
 ## Levenshtein distance tests
 In the `levenshtein/__init__.py` file, there are some tests to confirm that the algorithm is implemented properly. See `levenshtein/big_ass_words.txt` for more details about the tested words.
