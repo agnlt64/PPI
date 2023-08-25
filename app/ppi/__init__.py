@@ -11,10 +11,11 @@ from .utils import read_json_file, read_source_file, save_json, JSON_OUTPUT
 # Type alias to represent a function.
 # Looks like this:
 # function = {
-#     'function name': '...',
-#     'function args': ['arg1', 'arg2'],
-#     'file in which the function is': 'file.py',
-#     'line in the file where the function is': '12' 
+#     'name': 'randint',
+#     'args': ['a', 'b'],
+#     'nb_args': 2
+#     'filename': 'random.py',
+#     'line': '12'
 # }
 FunctionType = dict[str, list[str], str, str]
 
