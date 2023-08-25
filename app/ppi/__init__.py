@@ -2,7 +2,6 @@ import ast
 import os
 import glob
 import time
-import json
 
 from PyLog.logger import Logger
 from .levenshtein import lev
