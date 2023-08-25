@@ -6,11 +6,13 @@ import json
 
 from PyLog.logger import Logger
 from .levenshtein import lev
+from .normalize import normalize, get_normalized_args, get_signature
+from .utils import read_json_file, read_source_file, save_json, JSON_OUTPUT
 
 # Type alias to represent a function.
 # Looks like this:
 # function = {
-#     'fucntion name': '...',
+#     'function name': '...',
 #     'function args': ['arg1', 'arg2'],
 #     'file in which the function is': 'file.py',
 #     'line in the file where the function is': '12' 
@@ -18,47 +20,8 @@ from .levenshtein import lev
 FunctionType = dict[str, list[str], str, str]
 
 STDLIB_IGNORE = ['test', 'site-packages', 'lib2to3']
-JSON_OUTPUT = 'functions.json'
 
 logger = Logger()
-
-def read_source_file(filename: os.PathLike) -> str:
-    """
-    Retrieves the content of the `filename`. Used to parse a Python file.
-    """
-    with open(filename, 'r') as source:
-        return source.read()
-
-
-def save_json(content: list, filename: str = JSON_OUTPUT) -> None:
-    """
-    Save the `content` (Python dict) to the `filename`. By default, the filename is `JSON_OUTPUT`.
-    """
-    data = json.dumps(content, indent=4)
-    with open(filename, 'w') as out:
-        print(data, file=out)
-
-
-def read_json_file(filename: str = JSON_OUTPUT) -> dict:
-    """
-    Returns the content of the `filename` (must be a JSON file).
-    """
-    with open(filename) as f:
-        return json.load(f)
-        
-
-def get_signature(function: dict, file_infos: bool = False) -> str:
-    """
-    Returns the function signature from a `function` dict.
-    """
-    args = ''
-    for a in function['args']:
-        args += str(a) + ', '
-    signature = f"{function['name']}({args[:-2]})"
-    if file_infos:
-        # we put 2 spaces between the file path and the actual signature for easier JS parsing (do not change)
-        signature = f"{function['filename']}:{function['line']}  " + signature
-    return signature
 
 
 def get_function_from_node(node: ast.AST, file_path: os.PathLike, abspath: bool = False) -> FunctionType:
@@ -70,25 +33,11 @@ def get_function_from_node(node: ast.AST, file_path: os.PathLike, abspath: bool 
     new_function = {
         'name': name,
         'args': [arg.arg for arg in args],
+        'nb_args': len(args),
         'filename': file_path if not abspath else os.path.abspath(file_path),
         'line': node.lineno,
     }
     return new_function
-
-
-def normalize(query: str) -> str:
-    """
-    Universal format for a function signature and an user query.
-    The format is `function_name_separated_with_underscored ( arg1, arg2, arg3 )`. 
-    The number of spaces does not matter, which means that `is zipfile (filename)` and `is    zipfile ( filename)` 
-    will both produce the same output, e. g `is_zipfile ( filename )`.
-    """
-    split_query = query.split('(')
-    name = split_query[0] # everything brefore the opening parenthesis
-    name = '_'.join([a for a in name.split(' ') if a != ''])
-    args = split_query[1].replace(')', '')
-    args = ', '.join([a.lstrip().rstrip() for a in args.split(',')])
-    return f'{name} ( {args} )'
 
 
 def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], output: str = JSON_OUTPUT, web_context: bool = False) -> list[FunctionType]:
@@ -138,10 +87,18 @@ def sort(query: str, functions: list[FunctionType]) -> list:
     """
     sorted_functions = []
     for f in functions:
-        sorted_functions.append((lev(query, normalize(get_signature(f))), f))
+        normalized = normalize(query)
+        args = get_normalized_args(normalized)
+        f_signature = normalize(get_signature(f))
+        if len(args.split(', ')) == f['nb_args']:
+            strip_query = query.replace(args, '')
+            sorted_functions.append((lev(strip_query, f_signature), f))
+        else:
+            sorted_functions.append((lev(query, f_signature), f))
     return sorted(sorted_functions, key=lambda x: x[0])
 
 
-# query = normalize('mainloop()')
+# query = normalize('is zipfile(_)')
+# print(get_normalized_args(query))
 # functions = sort(query, index_folder('./stdlib'))
 # print(get_signature(functions[i][1], True))

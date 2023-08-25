@@ -1,6 +1,6 @@
-from PyLog.logger import Logger
+# from PyLog.logger import Logger
 
-logger = Logger()
+# logger = Logger()
 
 def init_dp(x: int, y: int) -> list[int]:
     dp = [[0] * (x + 1) for _ in range(y + 1)]
@@ -18,6 +18,7 @@ def lev(a: str, b: str) -> int:
             dp[i][j] = min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost)
 
     return dp[m][n]
+
 
 def test_lev() -> bool:
     with open('big_ass_words.txt', 'r') as words:
@@ -39,15 +40,16 @@ def test_lev() -> bool:
     for i, (str1, str2, expected_distance) in enumerate(test_cases):
         distance = lev(str1, str2)
         if distance == expected_distance:
-            logger.info(f"Test {i + 1}: Passed ✅")
+            pass
+            # logger.info(f"Test {i + 1}: Passed ✅")
         else:
-            logger.warning(f"Test case {i + 1}: Failed ❌. Expected {expected_distance}, got {distance}.")
+            # logger.warning(f"Test case {i + 1}: Failed ❌. Expected {expected_distance}, got {distance}.")
             failed = True
     return failed
 
 
-if __name__ == '__main__':
-    if test_lev():
-        logger.error('Not all the tests have passed!')
-    else:
-        logger.info('All tests passed successfully!')
+# if __name__ == '__main__':
+#     if test_lev():
+#         logger.error('Not all the tests have passed!')
+#     else:
+#         logger.info('All tests passed successfully!')
