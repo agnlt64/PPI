@@ -53,12 +53,12 @@ def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], ou
             return read_json_file(output)
 
     functions = []
-    folders_to_ignore += STDLIB_IGNORE
+    folders_to_ignore = [folders_to_ignore] + STDLIB_IGNORE
     start = time.time()
     for filename in glob.iglob(f'{base_folder}/**', recursive=True):
         current_dir = filename.split('/')
         # https://stackoverflow.com/questions/3170055/test-if-lists-share-any-items-in-python (for 👇)
-        want_to_continue = filename.endswith('py') and not bool(set(current_dir) & set(folders_to_ignore))
+        want_to_continue = filename.endswith('py') or filename.endswith('pyi') and not bool(set(current_dir) & set(folders_to_ignore))
         if os.path.isfile(filename) and want_to_continue:
             if not web_context:
                 logger.info(f'Reading {filename}...')

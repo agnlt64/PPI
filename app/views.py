@@ -13,10 +13,10 @@ def index():
 def search_folder():
     args = request.args.to_dict()
     folder = args.get('folder')
-    folders_to_ignore = args.get('ignore')
+    folders_to_ignore = args.get('ignore') if args.get('ignore') != '' else None
     numbers_of_functions = int(args.get('max'))
     signature = normalize(args.get('signature'))
-    unsorted_functions = index_folder(folder, output='app/ppi/functions.json', web_context=True, folders_to_ignore=[folders_to_ignore])
+    unsorted_functions = index_folder(folder, output='app/ppi/functions.json', web_context=True, folders_to_ignore=folders_to_ignore)
     sorted_functions = sort(signature, unsorted_functions)
     functions = [get_signature(sorted_functions[i][1], file_infos=True) for i in range(len(sorted_functions))]
     return json.dumps(functions[:numbers_of_functions])
