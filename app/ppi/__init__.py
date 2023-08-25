@@ -6,7 +6,7 @@ import json
 
 from PyLog.logger import Logger
 from .levenshtein import lev
-from .normalize import normalize, get_normalized_args, get_signature
+from .normalize import normalize, get_normalized_args, get_signature, get_function_name, remove_args
 from .utils import read_json_file, read_source_file, save_json, JSON_OUTPUT
 
 # Type alias to represent a function.
@@ -90,9 +90,13 @@ def sort(query: str, functions: list[FunctionType]) -> list:
         normalized = normalize(query)
         args = get_normalized_args(normalized)
         f_signature = normalize(get_signature(f))
-        if len(args.split(', ')) == f['nb_args']:
+        if args == '*':
+            query_name = get_function_name(query)
+            name = get_function_name(f_signature)
+            sorted_functions.append((lev(query_name, name), f))
+        elif '_' in args and len(args.split(', ')) == f['nb_args']:
             strip_query = query.replace(args, '')
-            sorted_functions.append((lev(strip_query, f_signature), f))
+            sorted_functions.append((lev(strip_query, remove_args(f_signature)), f))
         else:
             sorted_functions.append((lev(query, f_signature), f))
     return sorted(sorted_functions, key=lambda x: x[0])

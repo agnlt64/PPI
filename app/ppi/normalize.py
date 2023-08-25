@@ -21,10 +21,20 @@ def normalize(query: str) -> str:
     """
     return _normalize(_query=query)[0]
 
+
 def get_normalized_args(query: str) -> str:
     return _normalize(_query=query)[1]
 
 
+def get_function_name(func) -> str:
+    return func.split('(')[0].rstrip()
+
+
+def remove_args(func: str) -> str:
+    return func.replace(get_normalized_args(func), '')
+    
+
+# Tests
 def test_func_normalizer() -> bool:
     test_cases = [
         ("random(a, b)", "random ( a, b )"),
