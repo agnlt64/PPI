@@ -233,6 +233,27 @@ body {
     border-color: #16679a;
 }
 
+/* no results */
+.no-results {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+    /* hidden by default */
+    display: none;
+}
+
+.no-results img {
+    aspect-ratio: 1/1;
+    width: 12rem;
+}
+
+.no-results span {
+    color: #e23d20;
+}
+
 /* style for function card */
 .results {
     margin: 1rem;

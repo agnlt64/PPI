@@ -4,6 +4,8 @@ const ignore = document.getElementById('ignore')
 const max = document.getElementById('range')
 const indexForm = document.getElementById('index-form')
 const resultsDiv = document.getElementById('results')
+const noResults = document.getElementById('no-results')
+const errorMessage = document.getElementById('error')
 const spinner = document.getElementById('spin')
 
 function buildCard(functionFile, functionName, functionArgs) {
@@ -32,6 +34,7 @@ signature.addEventListener('input', () => {
 indexForm.addEventListener('submit', e => {
     e.preventDefault()
     spinner.style.display = 'flex'
+    noResults.style.display = 'none'
     const apiUrl = `/search?folder=${folderToIndex.value}&signature=${signature.value}&ignore=${ignore.value}&max=${max.value}`
     while (resultsDiv.firstChild) {
         resultsDiv.removeChild(resultsDiv.lastChild)
@@ -50,7 +53,8 @@ indexForm.addEventListener('submit', e => {
             spinner.style.display = 'none'
         })
         .catch(() => {
-            resultsDiv.innerHTML = `No match found for function '${signature.value}'!`
+            noResults.style.display = 'flex'
+            errorMessage.innerHTML = `No match found for function '${signature.value}'!`
             spinner.style.display = 'none'
         })
 })

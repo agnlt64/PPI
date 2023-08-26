@@ -102,6 +102,10 @@
 		</svg>
         <p>Indexing...</p>
     </div>
+	<div id="no-results" class="no-results">
+		<img src="{{ url_for('static', filename='media/no-results.png') }}" alt="No results found!">
+		<span id="error"></span>
+	</div>
     <div id="results" class="results"></div>
     <template data-function-card>
         <div class="function-card">
