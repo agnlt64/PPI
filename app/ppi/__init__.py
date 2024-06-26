@@ -48,7 +48,7 @@ def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], ou
     """
     # before indexing, check if there is the JSON file functions.json
     if not web_context:
-        logger.warning(f'Not indexing {base_folder}, reading the content of {output}. If you want to avoid this behaviour, either delete or rename {JSON_OUTPUT}.')
+        logger.warning(f'Not indexing {base_folder}, reading the content of {output}. If you want to avoid this behaviour, either delete or rename {JSON_OUTPUT}.\n')
         if os.path.exists(output):
             return read_json_file(output)
 
@@ -61,10 +61,10 @@ def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], ou
         want_to_continue = filename.endswith('py') or filename.endswith('pyi') and not bool(set(current_dir) & set(folders_to_ignore))
         if os.path.isfile(filename) and want_to_continue:
             if not web_context:
-                logger.info(f'Reading {filename}...')
+                logger.info(f'Reading {filename}...\n')
             source_code = read_source_file(filename)
             if not web_context:
-                logger.info(f'Parsing {filename}...')
+                logger.info(f'Parsing {filename}...\n')
             parsed = ast.parse(source_code)
             # go through the AST
             for node in ast.walk(parsed):
@@ -73,11 +73,10 @@ def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], ou
                     new_function = get_function_from_node(node, filename)
                     functions.append(new_function)
     # save the results to a JSON file
-    logger.info(f'Saving the results to {output}...')
+    logger.info(f'Saving the results to {output}...\n')
     save_json(content=functions, filename=output)
     end = time.time()
-    logger.info(f'Indexed folder {base_folder} in {end - start} seconds.')
-    print(logger.RESET)
+    logger.info(f'Indexed folder {base_folder} in {round(end - start, 2)} seconds.\n')
     return functions
 
 
@@ -100,9 +99,3 @@ def sort(query: str, functions: list[FunctionType]) -> list:
         else:
             sorted_functions.append((lev(query, f_signature), f))
     return sorted(sorted_functions, key=lambda x: x[0])
-
-
-# query = normalize('is zipfile(_)')
-# print(get_normalized_args(query))
-# functions = sort(query, index_folder('./stdlib'))
-# print(get_signature(functions[i][1], True))

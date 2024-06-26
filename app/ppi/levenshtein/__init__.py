@@ -1,6 +1,6 @@
-# from PyLog.logger import Logger
+from PyLog.logger import Logger
 
-# logger = Logger()
+logger = Logger()
 
 def init_dp(x: int, y: int) -> list[int]:
     dp = [[0] * (x + 1) for _ in range(y + 1)]
@@ -9,6 +9,10 @@ def init_dp(x: int, y: int) -> list[int]:
     return dp
 
 def lev(a: str, b: str) -> int:
+    """
+    Returns the Levenshtein distance between `a` and `b`.
+    See https://en.wikipedia.org/wiki/Levenshtein_distance for more details.
+    """
     m, n = len(a), len(b)
     dp = init_dp(n, m)
 
@@ -41,15 +45,15 @@ def test_lev() -> bool:
         distance = lev(str1, str2)
         if distance == expected_distance:
             pass
-            # logger.info(f"Test {i + 1}: Passed ✅")
+            logger.info(f"Test {i + 1}: Passed ✅\n")
         else:
-            # logger.warning(f"Test case {i + 1}: Failed ❌. Expected {expected_distance}, got {distance}.")
+            logger.warning(f"Test case {i + 1}: Failed ❌. Expected {expected_distance}, got {distance}.\n")
             failed = True
     return failed
 
 
-# if __name__ == '__main__':
-#     if test_lev():
-#         logger.error('Not all the tests have passed!')
-#     else:
-#         logger.info('All tests passed successfully!')
+if __name__ == '__main__':
+    if test_lev():
+        logger.error('Not all the tests have passed!\n')
+    else:
+        logger.info('All tests passed successfully!\n')

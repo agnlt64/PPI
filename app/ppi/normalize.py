@@ -45,9 +45,9 @@ def test_func_normalizer() -> bool:
     for i, (f, expected) in enumerate(test_cases):
         normalized_func = normalize(f)
         if normalized_func == expected:
-            logger.info(f"Test {i + 1}: Passed ✅")
+            logger.info(f"Test {i + 1}: Passed ✅\n")
         else:
-            logger.warning(f"Test case {i + 1}: Failed ❌. Expected {expected}, got {normalized_func}.")
+            logger.warning(f"Test case {i + 1}: Failed ❌. Expected {expected}, got {normalized_func}.\n")
             failed = True
     return failed
 
@@ -61,9 +61,9 @@ def test_args_normalizer() -> bool:
     for i, (f, expected) in enumerate(test_cases):
         normalized_args = get_normalized_args(f)
         if normalized_args == expected:
-            logger.info(f"Test {i + 1}: Passed ✅")
+            logger.info(f"Test {i + 1}: Passed ✅\n")
         else:
-            logger.warning(f"Test case {i + 1}: Failed ❌. Expected {expected}, got {normalized_args}.")
+            logger.warning(f"Test case {i + 1}: Failed ❌. Expected {expected}, got {normalized_args}.\n")
             failed = True
     return failed
 
@@ -84,6 +84,6 @@ def get_signature(function: dict, file_infos: bool = False) -> str:
 
 if __name__ == '__main__':
     if test_func_normalizer() and test_args_normalizer():
-        logger.info("All tests passed!")
+        logger.info("All tests passed!\n")
     else:
-        logger.error('Not all the tests have passed!')
+        logger.error('Not all the tests have passed!\n')

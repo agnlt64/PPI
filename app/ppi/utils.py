@@ -8,7 +8,6 @@ def read_source_file(filename: os.PathLike) -> str:
     Retrieves the content of the `filename`. Used to parse a Python file.
     """
     with open(filename, 'r', encoding='utf-8') as source:
-        print(source)
         return source.read()
 
 
