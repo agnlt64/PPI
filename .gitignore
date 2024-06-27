@@ -3,3 +3,5 @@ stdlib/
 __pycache__/
 logs.txt
 .env/
+.mypy_cache/
+.vscode/

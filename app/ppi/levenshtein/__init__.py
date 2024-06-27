@@ -2,7 +2,7 @@ from PyLog.logger import Logger
 
 logger = Logger()
 
-def init_dp(x: int, y: int) -> list[int]:
+def init_dp(x: int, y: int) -> list[list[int]]:
     dp = [[0] * (x + 1) for _ in range(y + 1)]
     for i in range(y + 1): dp[i][0] = i
     for j in range(x + 1): dp[0][j] = j

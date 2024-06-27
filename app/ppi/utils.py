@@ -3,7 +3,7 @@ import json
 
 JSON_OUTPUT = 'functions.json'
 
-def read_source_file(filename: os.PathLike) -> str:
+def read_source_file(filename: str) -> str:
     """
     Retrieves the content of the `filename`. Used to parse a Python file.
     """
