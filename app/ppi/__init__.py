@@ -2,11 +2,12 @@ import ast
 import os
 import glob
 import time
+import platform
 
 from PyLog.logger import Logger
 from .levenshtein import lev
 from .normalize import normalize, get_normalized_args, get_signature, get_function_name, remove_args
-from .utils import read_json_file, read_source_file, save_json, JSON_OUTPUT
+from .utils import read_json_file, read_source_file, save_json, is_python_file, JSON_OUTPUT
 
 # Type alias to represent a function.
 # Looks like this:
@@ -56,9 +57,12 @@ def index_folder(base_folder: str, folders_to_ignore: list[str] = [], output: st
     folders_to_ignore = folders_to_ignore + STDLIB_IGNORE
     start = time.time()
     for filename in glob.iglob(f'{base_folder}/**', recursive=True):
-        current_dir = filename.split('/')
+        if platform.system() == 'Windows':
+            current_dir = filename.split('\\')
+        else:
+            current_dir = filename.split('/')
         # https://stackoverflow.com/questions/3170055/test-if-lists-share-any-items-in-python (for 👇)
-        want_to_continue = filename.endswith('py') or filename.endswith('pyi') and not bool(set(current_dir) & set(folders_to_ignore))
+        want_to_continue = is_python_file(filename) and not bool(set(current_dir) & set(folders_to_ignore))
         if os.path.isfile(filename) and want_to_continue:
             if not web_context:
                 logger.info(f'Reading {filename}...\n')

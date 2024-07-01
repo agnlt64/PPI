@@ -26,3 +26,7 @@ def read_json_file(filename: str = JSON_OUTPUT) -> dict:
     """
     with open(filename, encoding='utf-8') as f:
         return json.load(f)
+    
+
+def is_python_file(filename: str) -> bool:
+    return filename.endswith('py') or filename.endswith('pyi')
