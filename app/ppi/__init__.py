@@ -40,7 +40,7 @@ def get_function_from_node(node: ast.FunctionDef, file_path: str, abspath: bool 
     return new_function
 
 
-def index_folder(base_folder: os.PathLike, folders_to_ignore: list[str] = [], output: str = JSON_OUTPUT, web_context: bool = False) -> list[FunctionType] | dict:
+def index_folder(base_folder: str, folders_to_ignore: list[str] = [], output: str = JSON_OUTPUT, web_context: bool = False) -> list[FunctionType] | dict:
     """
     Index the `base_folder` while ignoring the `folder_to_ignore` list. See `STDLIB_IGNORE` for the defaults folders that will be ignored.
     When the indexing is done, the functions that have been parsed are saved to the `JSON_OUTPUT` file by default.
