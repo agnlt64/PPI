@@ -20,7 +20,7 @@ def save_json(content: list, filename: str = JSON_OUTPUT) -> None:
         out.write(data)
 
 
-def read_json_file(filename: str = JSON_OUTPUT) -> dict:
+def read_json_file(filename: str = JSON_OUTPUT) -> list:
     """
     Returns the content of the `filename` (must be a JSON file).
     """

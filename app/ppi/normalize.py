@@ -77,8 +77,7 @@ def get_signature(function: dict, file_infos: bool = False) -> str:
         args += str(a) + ', '
     signature = f"{function['name']}({args[:-2]})"
     if file_infos:
-        # we put 2 spaces between the file path and the actual signature for easier JS parsing (do not change)
-        signature = f"{function['filename']}:{function['line']}  " + signature
+        signature = f"{function['filename']}:{function['line']} " + signature
     return signature
 
 

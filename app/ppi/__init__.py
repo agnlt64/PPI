@@ -4,6 +4,8 @@ import glob
 import time
 import platform
 
+from sympy import Function
+
 from PyLog.logger import Logger
 from .levenshtein import lev
 from .normalize import normalize, get_normalized_args, get_signature, get_function_name, remove_args
@@ -16,9 +18,10 @@ from .utils import read_json_file, read_source_file, save_json, is_python_file, 
 #     'args': ['a', 'b'],
 #     'nb_args': 2
 #     'filename': 'random.py',
-#     'line': '12'
+#     'line': '12',
+#     'docstring': None || 'function docstring'
 # }
-FunctionType = dict[str, list[str] | int | str]
+FunctionType = dict[str, list[str] | int | str | None]
 
 STDLIB_IGNORE = ['test', 'site-packages', 'lib2to3']
 
@@ -37,11 +40,12 @@ def get_function_from_node(node: ast.FunctionDef, file_path: str, abspath: bool 
         'nb_args': len(args),
         'filename': file_path if not abspath else os.path.abspath(file_path),
         'line': node.lineno,
+        'docstring': ast.get_docstring(node)
     }
     return new_function
 
 
-def index_folder(base_folder: str, folders_to_ignore: list[str] = [], output: str = JSON_OUTPUT, web_context: bool = False) -> list[FunctionType] | dict:
+def index_folder(base_folder: str, folders_to_ignore: list[str] = [], output: str = JSON_OUTPUT, web_context: bool = False) -> list[FunctionType]:
     """
     Index the `base_folder` while ignoring the `folder_to_ignore` list. See `STDLIB_IGNORE` for the defaults folders that will be ignored.
     When the indexing is done, the functions that have been parsed are saved to the `JSON_OUTPUT` file by default.
@@ -53,9 +57,9 @@ def index_folder(base_folder: str, folders_to_ignore: list[str] = [], output: st
         if os.path.exists(output):
             return read_json_file(output)
 
-    functions = []
+    functions: list[FunctionType] = []
     folders_to_ignore = folders_to_ignore + STDLIB_IGNORE
-    start = time.time()
+    start = time.perf_counter()
     for filename in glob.iglob(f'{base_folder}/**', recursive=True):
         if platform.system() == 'Windows':
             current_dir = filename.split('\\')
@@ -79,12 +83,12 @@ def index_folder(base_folder: str, folders_to_ignore: list[str] = [], output: st
     # save the results to a JSON file
     logger.info(f'Saving the results to {output}...\n')
     save_json(content=functions, filename=output)
-    end = time.time()
+    end = time.perf_counter()
     logger.info(f'Indexed folder {base_folder} in {round(end - start, 2)} seconds.\n')
     return functions
 
 
-def sort(query: str, functions: list[FunctionType]) -> list:
+def sort(query: str, functions: list[FunctionType]) -> list[tuple[int, FunctionType]]:
     """
     Sort the functions using the `levenshtein.lev()` function.
     """

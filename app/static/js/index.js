@@ -41,13 +41,9 @@ indexForm.addEventListener('submit', e => {
     }
     fetch(encodeURI(apiUrl))
         .then(res => res.json())
-        .then(data => { 
+        .then(data => {
             for (func of data) {
-                // 2 spaces for easier parsing
-                const splitFunc = func.split('  ')
-                const s = splitFunc[1].split('(')
-                const args = s[1].split(')')[0]
-                const card = buildCard(splitFunc[0], s[0], args)
+                const card = buildCard(func.filename, func.name, func.args)
                 resultsDiv.appendChild(card)
             }
             spinner.style.display = 'none'
