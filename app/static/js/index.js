@@ -8,6 +8,8 @@ const noResults = document.getElementById('no-results')
 const errorMessage = document.getElementById('error')
 const spinner = document.getElementById('spin')
 
+const isWhitespace= str => !str.replace(/\s/g, '').length
+
 function buildCard(functionFile, functionName, functionArgs) {
     const functionCardTemplate = document.querySelector('[data-function-card]')
     const functionCard = functionCardTemplate.content.cloneNode(true).children[0]
@@ -25,32 +27,42 @@ function buildCard(functionFile, functionName, functionArgs) {
 }
 
 signature.addEventListener('input', () => {
+    const prevCursorPos = signature.selectionStart
     document.title = signature.value !== '' ? `PPI - ${signature.value}` : 'PPI, the Python Project Indexer'
-    if (signature.value.charAt(signature.value.length - 1) === '(') {
+    const len = signature.value.length
+    const lastChar = signature.value.charAt(len - 1)
+    if (lastChar !== ')') {
         signature.value += ')'
+        signature.selectionStart = prevCursorPos
+        // deselectText(signature)
+    }
+    if (signature.value.includes(')') && !signature.value.includes('(')) {
+        signature.value = signature.value.replace(')', '')
     }
 })
 
 indexForm.addEventListener('submit', e => {
     e.preventDefault()
-    spinner.style.display = 'flex'
-    noResults.style.display = 'none'
-    const apiUrl = `/search?folder=${folderToIndex.value}&signature=${signature.value}&ignore=${ignore.value}&max=${max.value}`
-    while (resultsDiv.firstChild) {
-        resultsDiv.removeChild(resultsDiv.lastChild)
+    if (!isWhitespace(signature.value)) {
+        spinner.style.display = 'flex'
+        noResults.style.display = 'none'
+        const apiUrl = `/search?folder=${folderToIndex.value}&signature=${signature.value}&ignore=${ignore.value}&max=${max.value}`
+        while (resultsDiv.firstChild) {
+            resultsDiv.removeChild(resultsDiv.lastChild)
+        }
+        fetch(encodeURI(apiUrl))
+            .then(res => res.json())
+            .then(data => {
+                for (func of data) {
+                    const card = buildCard(func.filename, func.name, func.args)
+                    resultsDiv.appendChild(card)
+                }
+                spinner.style.display = 'none'
+            })
+            .catch(() => {
+                noResults.style.display = 'flex'
+                errorMessage.innerHTML = `No match found for function '${signature.value}'!`
+                spinner.style.display = 'none'
+            })
     }
-    fetch(encodeURI(apiUrl))
-        .then(res => res.json())
-        .then(data => {
-            for (func of data) {
-                const card = buildCard(func.filename, func.name, func.args)
-                resultsDiv.appendChild(card)
-            }
-            spinner.style.display = 'none'
-        })
-        .catch(() => {
-            noResults.style.display = 'flex'
-            errorMessage.innerHTML = `No match found for function '${signature.value}'!`
-            spinner.style.display = 'none'
-        })
 })
