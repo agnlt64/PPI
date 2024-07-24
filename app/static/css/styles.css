@@ -266,6 +266,7 @@ body {
     padding: 10px 16px;
     border-radius: 8px;
     border: 1px solid #a6a6a6;
+    position: relative;
 }
 
 .results .function-card .function-file-path {
@@ -282,4 +283,8 @@ body {
 
 .results .function-card .function-args {
     color: #49ffd4;
+}
+
+.results .function-card .docstring {
+    color: #2D751F;
 }

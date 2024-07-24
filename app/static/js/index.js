@@ -10,7 +10,15 @@ const spinner = document.getElementById('spin')
 
 const isWhitespace= str => !str.replace(/\s/g, '').length
 
-function buildCard(functionFile, functionName, functionArgs) {
+function remove(str, ch) {
+    let newStr = ''
+    for (let i = 0; i < str.length; ++i) {
+        if (str[i] != ch) newStr += str[i]
+    }
+    return newStr
+}
+
+function buildCard(functionFile, functionName, functionArgs, functionDocstring) {
     const functionCardTemplate = document.querySelector('[data-function-card]')
     const functionCard = functionCardTemplate.content.cloneNode(true).children[0]
 
@@ -23,6 +31,9 @@ function buildCard(functionFile, functionName, functionArgs) {
     const args = functionCard.querySelector('[data-function-args]')
     args.textContent = functionArgs
 
+    const docstring = functionCard.querySelector('[data-function-docstring]')
+    docstring.textContent = functionDocstring
+
     return functionCard
 }
 
@@ -34,7 +45,6 @@ signature.addEventListener('input', () => {
     if (lastChar !== ')') {
         signature.value += ')'
         signature.selectionStart = prevCursorPos
-        // deselectText(signature)
     }
     if (signature.value.includes(')') && !signature.value.includes('(')) {
         signature.value = signature.value.replace(')', '')
@@ -54,7 +64,12 @@ indexForm.addEventListener('submit', e => {
             .then(res => res.json())
             .then(data => {
                 for (func of data) {
-                    const card = buildCard(func.filename, func.name, func.args)
+                    let docstring = 'No docstring found!'
+                    if (func.docstring) docstring = func.docstring
+                    // for some reason, the string.replace('`', '') method of JS
+                    // does not work here so I made my own
+                    docstring = remove(docstring, '`')
+                    const card = buildCard(func.filename, func.name, func.args, docstring)
                     resultsDiv.appendChild(card)
                 }
                 spinner.style.display = 'none'
