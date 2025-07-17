@@ -3,6 +3,7 @@ stdlib/
 __pycache__/
 logs.txt
 .env/
+.venv/
 .mypy_cache/
 .vscode/
 .DS_Store

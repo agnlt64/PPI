@@ -4,8 +4,6 @@ import glob
 import time
 import platform
 
-from sympy import Function
-
 from PyLog.logger import Logger
 from .levenshtein import lev
 from .normalize import normalize, get_normalized_args, get_signature, get_function_name, remove_args

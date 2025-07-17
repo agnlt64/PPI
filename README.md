@@ -1,16 +1,16 @@
 # Python Project Indexer
 
-This Python web application will index a specified folder (ignoring what you ask it to ignore) and will return a list of functions contained in the folder (aka Python project) matching the given signature, using the Levenshtein distance.
+This Python web application will index a specified folder (ignoring what you ask it to ignore) and will return a list of functions contained in the folder (aka Python project) matching the given signature, using the [Levenshtein](https://en.wikipedia.org/wiki/Levenshtein_distance) distance.
 
 ## Quick start
 ```console
-git clone --recursive https://github.com/ABFStudio/PPI.git
+git clone --recursive https://github.com/agnlt64/PPI.git
 cd PPI
-python -m venv .env
-. .env/bin/activate # Unix
-.env\Scripts\Activate.ps1 # Windows
-pip install -r requirements.txt
-python main.py # start the webserver on 127.0.0.1:8080
+uv venv .venv
+. .venv/bin/activate # Unix
+.venv\Scripts\activate # Windows
+uv sync
+uv run main.py
 ```
 
 ## How to use it
